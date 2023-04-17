@@ -1,13 +1,22 @@
-async function getProxy(options, callback) {
-  if (typeof options == 'function') {callback = options; options = {}};
-  
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(a=>a.forEach(e=>fetch(e.active.scriptURL).then(e=>e.text()).then(e=>e.includes('croxyproxy')?callback(true):null)))
-  }
-  
-  if (window.$Rhodium||window.__uv||window.alloyLocation||window.__get$Loc||window._womginx_fetch||window.$aero) {
-    callback(true)
-  }
-  
-  return callback(false);
+async function getProxy(options) {
+    if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        
+        for (var reg of regs) {
+            var req = await fetch(reg.active.scriptURL);
+            var text = await req.text();
+            
+            if (text.includes('croxyproxy')) return true;
+        }
+    }
+    
+    if (window.$Rhodium||window.__uv||window.alloyLocation||window.__get$Loc||window._womginx_fetch||window.$aero) return true;
+
+    if ('window.location' !== 'wind'+'ow'+'.'+'locat'+'ion') return true;
+
+    if (Reflect.get(self, 'location')!==window.location) return true;
+
+    if (Reflect.get(self, 'location').constructor!==window.Location) return true;
+    
+    return false;
 }
